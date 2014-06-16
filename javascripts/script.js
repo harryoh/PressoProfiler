@@ -3,9 +3,17 @@ var app = angular.module('myApp', [ 'googlechart' ]);
 app.controller('MainCtrl', function($scope, $timeout, $filter) {
     var chart = $scope.chart = {};
     chart.type = "LineChart";
-    chart.data = [
-       ['Time', 'Temperature']
-      ];
+    chart.data = {
+      "cols": [
+        {id: "time", label: "Time", type: "string"},
+        {id: "temper", label: "Temperature", type: "number"}
+      ], "rows": [
+        {c: [
+            {v: "00:00"},
+            {v: 50}
+        ]}
+      ]};
+
     chart.options = {
         width: 600,
         height: 400,
@@ -21,19 +29,20 @@ app.controller('MainCtrl', function($scope, $timeout, $filter) {
     $scope.counter = 0;
     $scope.data = [];
     $scope.checkTemperature = function () {
-      var diffSec = (new Date()) - sTime;
-      var pastTime = $filter('date')(diffSec, 'mm:ss');
-      var temp = getTemperature(diffSec/1000);
-      $scope.data = [pastTime, temp];
-      chart.data.push($scope.data);
+      $scope.counter += 10;
+      var diffSec = $scope.counter;
+      var pastTime = $filter('date')(diffSec*1000, 'mm:ss');
+      var temp = getTemperature(diffSec);
+      $scope.data = pastTime + ' ' + temp;
+      chart.data.rows.push({c: [{v:pastTime},{v:temp}]});
 
-      if (diffSec > 720*1000) {
+      if (diffSec > 720) {
         $timeout.cancel(thandler);
         return;
       }
-      thangler = $timeout($scope.checkTemperature, 3000);
+      thangler = $timeout($scope.checkTemperature, 300);
     };
-    var thandler = $timeout($scope.checkTemperature, 3000);
+    var thandler = $timeout($scope.checkTemperature, 300);
 
     var idx = 0;
     var getTemperature = function (time) {
