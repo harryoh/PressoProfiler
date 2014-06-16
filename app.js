@@ -45,7 +45,6 @@ app.get('/', function(req, res) {
 });
 app.get('/serial/list', serial.list);
 
-/*
 io.sockets.on('connection', function(socket) {
   setInterval(function() {
     var num = Math.floor(Math.random() * 250) + 1;
@@ -53,8 +52,9 @@ io.sockets.on('connection', function(socket) {
     console.log(num);
   }, 1000);
 });
-*/
 
+
+/*
 var currentPort = new SerialPort('/dev/tty.usbserial-FTCD9MGQ', {
   baudRate: 115200
 //  parser: serialport.parsers.readline("\r\n")
@@ -71,5 +71,6 @@ io.sockets.on('connection', function(socket) {
     currentPort.close();
   });
 });
+*/
 
 

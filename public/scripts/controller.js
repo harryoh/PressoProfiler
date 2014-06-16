@@ -19,9 +19,9 @@ app.controller('ChartCtrl', function($scope, $filter, socket) {
   
   var sTime = new Date();
   socket.on('SENDVALUE', function (value) {
-    var pastTime = (new Date()) - sTime;
-    $scope.data = value;
-    data.addRow([$filter('date')(pastTime, 'mm:ss'), value]);
+    var pastTime = $filter('date')(((new Date()) - sTime), 'mm:ss');
+    $scope.data = pastTime + ' ' + value + '℃';
+    data.addRow([pastTime, value]);
     chart.draw(data, options);
 
   });
