@@ -7,12 +7,8 @@ app.controller('MainCtrl', function($scope, $timeout, $filter) {
       "cols": [
         {id: "time", label: "Time", type: "string"},
         {id: "temper", label: "Temperature", type: "number"}
-      ], "rows": [
-        {c: [
-            {v: "00:00"},
-            {v: 50}
-        ]}
-      ]};
+      ], "rows": []
+    };
 
     chart.options = {
         width: 600,
@@ -25,10 +21,24 @@ app.controller('MainCtrl', function($scope, $timeout, $filter) {
         columnNum: 1}]
     };
 
+    var map = [
+      109, 90, 89, 94, 98, 104, 110, 116, 122, 127, 132, 136,
+      141, 144, 148, 151, 154, 157, 160, 163, 166, 168, 171, 173,
+      176, 178, 180, 182, 184, 185, 187, 189, 190, 191, 192, 194,
+      195, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 206,
+      207, 207, 207, 207, 206, 207, 206, 206, 206, 206, 207, 207,
+      207, 208, 208, 208, 209, 209, 210, 210, 210, 210, 210, 210
+    ];
+
     var sTime = new Date();
     $scope.counter = 0;
     $scope.data = [];
     $scope.checkTemperature = function () {
+      if (idx >= map.length) {
+        $timeout.cancel(thandler);
+        return;
+      }
+
       $scope.counter += 10;
       var diffSec = $scope.counter;
       var pastTime = $filter('date')(diffSec*1000, 'mm:ss');
@@ -36,27 +46,12 @@ app.controller('MainCtrl', function($scope, $timeout, $filter) {
       $scope.data = pastTime + ' ' + temp;
       chart.data.rows.push({c: [{v:pastTime},{v:temp}]});
 
-      if (diffSec > 720) {
-        $timeout.cancel(thandler);
-        return;
-      }
-      thangler = $timeout($scope.checkTemperature, 300);
+      thangler = $timeout($scope.checkTemperature, 100);
     };
-    var thandler = $timeout($scope.checkTemperature, 300);
+    var thandler = $timeout($scope.checkTemperature, 100);
 
     var idx = 0;
     var getTemperature = function (time) {
-      var map = [205, 203, 202, 200, 200, 199, 197, 196, 195, 196, 197,
-                 198, 199, 200, 201, 202, 203, 204, 204, 205, 206, 207,
-                 208, 208, 208, 209, 209, 209, 210, 209, 209, 210, 210,
-                 211, 210, 209, 209, 210, 211, 210];
-
-      var temp = (time/3) + 50;
-      if (temp > 205) {
-        temp = map[idx];
-        if (idx < map.length) idx++;
-      }
-      return Math.floor(temp);
-
+      return Math.floor(map[idx++]);
     };
 });
